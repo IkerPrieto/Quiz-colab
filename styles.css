@@ -25,6 +25,7 @@ body {
     display: flex;
     padding-top: 4rem;
     padding-left: 5rem;
+    gap: 3rem;
     width: 100%;
 }
 
@@ -69,6 +70,16 @@ body {
     align-items: center;
     gap: 180px;
     padding: 1rem 4rem 1rem 4rem;
+}
+
+.chart-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 2rem;
+    align-content: center;
+    align-items: center;
+    padding: 1rem;
 }
 
 .questions-container {
@@ -162,7 +173,7 @@ button:hover {
 }
 
 #btnPlayAgain {
-    background-color: rgb(82, 140, 242);
+    background-color: hsl(218, 86%, 64%);
     padding: 2vh;
     margin-right: 15rem;
     align-self: center;

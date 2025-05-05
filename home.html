@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="stats.js" defer></script>
 </head>
 <body>
     <header class="header">
@@ -13,9 +15,18 @@
 
     <main class="main-content">
         <aside class="aside">
-            <div class="container">
+            <div class="container" id="quiz">
                 <h2>¡Welcome to the quiz!</h2>
                 <button id="btnStart">Take the quiz</button>
+            </div>
+        </aside>
+
+        <aside class="aside">
+            <div class="chart-container">
+                <h2>Your stats</h2>
+                <section id="chart">
+
+                </section>
             </div>
         </aside>
     </main>
