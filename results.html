@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quiz results</title>
+<<<<<<< Updated upstream
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -22,6 +23,52 @@
                 <button id="btnPlayAgain">Play again</button>
             </div>
         </aside>
+=======
+    <link rel="stylesheet" href="styles.css" />
+    <script src="puntuation.js" defer></script>
+  </head>
+  <body>
+    <header id="quizHeader" class="header">
+      <h1><a href="home.html">Quiz</a></h1>
+    </header>
+
+    <main class="main-results-content">
+      <aside class="results-aside">
+        <img id="result-image" src="" alt="result" class="imagen" />
+        <div class="results-container">
+          <h2>Resultado del quiz</h2>
+          <div class="results-text">
+            <p id="result-message"></p>
+          </div>
+          <button id="btnPlayAgain">Play again</button>
+        </div>
+      </aside>
+
+      <div id="modalQuizzConfig" class="modal" style="display: none">
+        <div class="modal-content">
+          <h2>Configura tu Quizz</h2>
+
+          <label for="category">Category:</label>
+          <select id="category"></select>
+
+          <label for="dificultad">Dificultad:</label>
+          <select id="difficulty">
+            <option value="easy">easy</option>
+            <option value="medium">medium</option>
+            <option value="hard">hard</option>
+          </select>
+
+          <label for="language">Language:</label>
+          <select id="language">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="fr">French</option>
+          </select>
+
+          <button id="btnComenzarQuizz">Comenzar</button>
+        </div>
+      </div>
+>>>>>>> Stashed changes
     </main>
-</body>
+  </body>
 </html>

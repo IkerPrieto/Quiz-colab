@@ -8,6 +8,15 @@ const DOM = {
   difficultySelect: document.getElementById("difficulty"),
   btnStartQuiz: document.getElementById("btnComenzarQuizz"),
   modal: document.getElementById("modalQuizzConfig"),
+<<<<<<< Updated upstream
+=======
+  languageSelect: document.getElementById("language"),
+  LANGUAGE_CODES: {
+    en: "English",
+    es: "Spanish",
+    fr: "French",
+  },
+>>>>>>> Stashed changes
 };
 
 // ======================
@@ -30,6 +39,10 @@ async function loadDropdowns() {
     const categoriesResponse = await fetch(
       "https://opentdb.com/api_category.php"
     );
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
     if (!categoriesResponse.ok) throw new Error("API Error");
     const categoriesData = await categoriesResponse.json();
 
@@ -72,6 +85,7 @@ function setupSelect(selectElement, items, valueKey, textKey, placeholderText) {
 }
 
 // ======================
+<<<<<<< Updated upstream
 //  QUIZ LOGIC
 // ======================
 async function getQuizQuestions(filters) {
@@ -92,6 +106,29 @@ async function getQuizQuestions(filters) {
   } catch (error) {
     console.error("Error fetching questions:", error);
     throw error;
+=======
+//  TRANSLATION FUNCTION
+// ======================
+
+async function translateText(text, targetLang) {
+  try {
+    const response = await fetch(LIBRETRANSLATE_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        q: text,
+        source: "auto",
+        target: targetLang,
+        // api_key: LIBRETRANSLATE_API_KEY
+      }),
+    });
+
+    const data = await response.json();
+    return data.translatedText || text;
+  } catch (error) {
+    console.error("Traduction error:", error);
+    return text;
+>>>>>>> Stashed changes
   }
 }
 
@@ -114,11 +151,61 @@ function setupEventListeners() {
   });
 }
 
+<<<<<<< Updated upstream
+=======
+// ======================
+// QUIZ LOGIC
+// ======================
+async function getTranslatedQuizQuestions(filters) {
+  try {
+    const originalQuestions = (await getQuizQuestions(filters)).results;
+    const targetLang = DOM.languageSelect.value;
+
+    if (targetLang === "en") return originalQuestions;
+
+    const translatedQuestions = [];
+
+    for (const question of originalQuestions) {
+      translatedQuestions.push({
+        ...question,
+        question: await translateText(question.question, targetLang),
+        correct_answer: await translateText(
+          question.correct_answer,
+          targetLang
+        ),
+        incorrect_answers: await Promise.all(
+          question.incorrect_answers.map((ans) =>
+            translateText(ans, targetLang)
+          )
+        ),
+      });
+    }
+
+    return translatedQuestions;
+  } catch (error) {
+    console.error("Translating error: ", error);
+    throw error;
+  }
+}
+function decodeSimple(text) {
+  return text
+    .replace(/&#039;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/&amp;/g, "&")
+    .replace(/&ntilde;/g, "ñ")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">");
+}
+// ======================
+// START QUIZ HANDLER
+// ======================
+>>>>>>> Stashed changes
 async function handleStartQuiz() {
   try {
     const filters = {
       category: DOM.categorySelect.value,
       difficulty: DOM.difficultySelect.value,
+<<<<<<< Updated upstream
     };
 
     const questionsData = await getQuizQuestions(filters);
@@ -136,6 +223,47 @@ async function handleStartQuiz() {
     DOM.modal.style.display = "none";
   }
 }
+=======
+      language: DOM.languageSelect.value,
+    };
+
+    const questionsData = await getTranslatedQuizQuestions(filters);
+
+    sessionStorage.setItem("quizFilters", JSON.stringify(filters));
+    sessionStorage.setItem("quizQuestions", JSON.stringify(questionsData));
+
+    window.location.href = "question.html";
+  } catch (error) {
+    console.error("Error starting quiz:", error);
+    alert("Error starting quiz. Try again");
+  }
+}
+
+// ======================
+//  API FUNCTIONS
+// ======================
+async function getQuizQuestions(filters) {
+  try {
+    let apiUrl = "https://opentdb.com/api.php?amount=10";
+
+    if (filters.category && filters.category !== "any") {
+      apiUrl += `&category=${filters.category}`;
+    }
+
+    if (filters.difficulty && filters.difficulty !== "any") {
+      apiUrl += `&difficulty=${filters.difficulty}`;
+    }
+
+    const response = await fetch(apiUrl);
+
+    if (!response.ok) throw new Error("API Error");
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching quiz questions:", error);
+    throw error;
+  }
+}
+>>>>>>> Stashed changes
 
 // ======================
 //  ERROR HANDLING
