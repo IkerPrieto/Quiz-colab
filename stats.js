@@ -3,8 +3,6 @@
 const today = new Date().toISOString().split("T")[0]; // Por ejemplo: "2025-05-07"
 const score = parseInt(localStorage.getItem("quizHistory")) || 0;
 
-const correctAnswers = score.gameStats?.correct || 0;
-
 let history = JSON.parse(localStorage.getItem("scoreHistory")) || [];
 
 history.push({ date: today, score });
@@ -39,46 +37,47 @@ for (let date in grouped) {
 
 // Pintar el gráfico
 
+// Pintar el gráfico
 let options = {
-    chart: {
-      type: "line",
-      stacked: false
-    },
-    dataLabels: {
-      enabled: false
-    },
-    colors: ["#528cf2"],
-    series: [
-      {
-        name: "Result",
-        data: []
-      }
-    ],
-    stroke: {
-      curve:"smooth",
-      width: [4, 4]
-    },
-    xaxis: {
-      categories: []
-    },
-    yaxis: [
-      {
-        axisTicks: {
-          show: true
-        },
-        axisBorder: {
-          show: true,
-          color: "black"
-        },
-        labels: {
-          style: {
-            colors: "black"
-          }
+  chart: {
+    type: "line",
+    stacked: false
+  },
+  dataLabels: {
+    enabled: false
+  },
+  colors: ["#528cf2"],
+  series: [
+    {
+      name: "Result",
+      data: data // Aquí se cargan los promedios
+    }
+  ],
+  stroke: {
+    curve: "smooth",
+    width: [4, 4]
+  },
+  xaxis: {
+    categories: categories // Aquí se cargan las fechas
+  },
+  yaxis: [
+    {
+      axisTicks: {
+        show: true
+      },
+      axisBorder: {
+        show: true,
+        color: "black"
+      },
+      labels: {
+        style: {
+          colors: "black"
         }
       }
-    ]
-  };
+    }
+  ]
+};
   
-  let chart = new ApexCharts(document.querySelector("#chart"), options);
+let chart = new ApexCharts(document.querySelector("#chart"), options);
   
-  chart.render();
+chart.render();
