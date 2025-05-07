@@ -7,13 +7,15 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="stats.js" defer></script>
+    <script src="script.js" defer></script>
 </head>
 <body>
     <header class="header">
         <h1>Quiz</h1>
     </header>
 
-    <main class="main-content">
+    <div>
+        <main class="main-content">
         <aside class="aside">
             <div class="container" id="quiz">
                 <h2>¡Welcome to the quiz!</h2>
@@ -29,6 +31,33 @@
                 </section>
             </div>
         </aside>
+
+        <div id="modalQuizzConfig" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h2>Configura tu Quizz</h2>
+                
+               <label for="category">Category:</label>
+                <select id="category">
+                </select>
+    
+                <label for="dificultad">Dificultad:</label>
+                <select id="difficulty">
+                    <option value="easy">easy</option>
+                    <option value="medium">medium</option>
+                    <option value="hard">hard</option>
+                </select>
+
+                <label for="language">Language:</label>
+<select id="language">
+  <option value="en">English</option>
+  <option value="es">Español</option>
+  <option value="fr">French</option>
+</select>
+        
+                <button id="btnComenzarQuizz">Comenzar</button>
+            </div>
+        </div>
     </main>
+    </div>
 </body>
 </html>

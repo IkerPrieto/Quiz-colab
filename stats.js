@@ -1,3 +1,44 @@
+// Guardar múltiples intentos por día
+
+const today = new Date().toISOString().split("T")[0]; // Por ejemplo: "2025-05-07"
+const score = parseInt(localStorage.getItem("quizHistory")) || 0;
+
+const correctAnswers = score.gameStats?.correct || 0;
+
+let history = JSON.parse(localStorage.getItem("scoreHistory")) || [];
+
+history.push({ date: today, score });
+
+localStorage.setItem("scoreHistory", JSON.stringify(history));
+
+
+// Calcular medias por día
+
+// Agrupar por fecha
+let grouped = {};
+
+history.forEach(entry => {
+  if (!grouped[entry.date]) {
+    grouped[entry.date] = [];
+  }
+  grouped[entry.date].push(entry.score);
+});
+
+// Calcular media por fecha
+let categories = [];
+let data = [];
+
+for (let date in grouped) {
+  const scores = grouped[date];
+  const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+
+  categories.push(date);
+  data.push(parseFloat(avg.toFixed(1))); // Redondeo a 1 decimal
+}
+
+
+// Pintar el gráfico
+
 let options = {
     chart: {
       type: "line",
@@ -10,7 +51,7 @@ let options = {
     series: [
       {
         name: "Result",
-        data: [2, 5, 8, 6, 5, 9, 2, 3, 7, 10, 4, 8]
+        data: []
       }
     ],
     stroke: {
@@ -18,7 +59,7 @@ let options = {
       width: [4, 4]
     },
     xaxis: {
-      categories: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+      categories: []
     },
     yaxis: [
       {
