@@ -17,12 +17,16 @@ const DOM = {
 };
 const HTML_ENTITIES = {
   "&#039;": "'",
+  "&039;": "'",
+  "&apos;": "'",
   "&quot;": '"',
   "&amp;": "&",
   "&ntilde;": "ñ",
   "&Ntilde;": "Ñ",
   "&lt;": "<",
   "&gt;": ">",
+  "&#60;": "<",
+  "&#62;": ">",
   "&iacute;": "í",
   "&eacute;": "é",
   "&oacute;": "ó",
@@ -35,13 +39,28 @@ const HTML_ENTITIES = {
   "&hellip;": "...",
 }; //La API de openDB devuelve los textos como htmlEntityes para evitar CORS
 
-const decodeHtmlEntities = (() => {
-  const entityRegex = /&[^;]+;/g;
-  return (text) =>
-    text
-      ? text.replace(entityRegex, (match) => HTML_ENTITIES[match] || match)
-      : text;
-})();
+const decodeHtmlEntities = (text) => {
+  if (!text) return text;
+  const entityRegex = /&(?:[a-z]+|#\d+);/gi;
+
+  return text.replace(entityRegex, (match) => {
+    if (HTML_ENTITIES[match]) {
+      return HTML_ENTITIES[match];
+    }
+
+    const numericMatch = match.match(/^&#(\d+);$/);
+    if (numericMatch) {
+      return String.fromCharCode(parseInt(numericMatch[1], 10));
+    }
+
+    const hexMatch = match.match(/^&#x([0-9a-f]+);$/i);
+    if (hexMatch) {
+      return String.fromCharCode(parseInt(hexMatch[1], 16));
+    }
+
+    return match;
+  });
+};
 
 const LIBRETRANSLATE_API_KEY = "conseguirapikey";
 const LIBRETRANSLATE_URL = "https://libretranslate.com/translate";
@@ -145,9 +164,13 @@ async function getTranslatedQuizQuestions(filters) {
     const { results: questions } = await getQuizQuestions(filters);
     const targetLang = DOM.languageSelect.value;
 
+    const decodedQuestions = questions.map(processQuestion);
+
     return targetLang === "en"
-      ? processQuestions(questions, (q) => q)
-      : processQuestions(questions, translateQuestionTexts(targetLang));
+      ? decodedQuestions
+      : await Promise.all(
+          decodedQuestions.map((q) => translateQuestion(q, targetLang))
+        );
   } catch (error) {
     console.error("Translation error:", error);
     throw error;
@@ -178,32 +201,31 @@ function translateQuestionTexts(targetLang) {
   };
 }
 
-async function processQuestions(questions, processor) {
-  return Promise.all(questions.map(processor));
+function processQuestion(question) {
+  return {
+    ...question,
+    question: decodeHtmlEntities(question.question),
+    correct_answer: decodeHtmlEntities(question.correct_answer),
+    incorrect_answers: question.incorrect_answers.map(decodeHtmlEntities),
+  };
 }
 
-async function translateText(text, targetLang) {
-  try {
-    const response = await fetch(LIBRETRANSLATE_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        q: text,
-        source: "auto",
-        target: targetLang,
-      }),
-    });
+async function translateQuestion(question, targetLang) {
+  const [translatedQuestion, translatedCorrect, ...translatedIncorrect] =
+    await Promise.all([
+      translateText(question.question, targetLang),
+      translateText(question.correct_answer, targetLang),
+      ...question.incorrect_answers.map((ans) =>
+        translateText(ans, targetLang)
+      ),
+    ]);
 
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-    const { translatedText } = await response.json();
-    const result = translatedText || text;
-
-    return result;
-  } catch (error) {
-    console.error(`Translation failed for "${text}" to ${targetLang}:`, error);
-    return text;
-  }
+  return {
+    ...question,
+    question: translatedQuestion,
+    correct_answer: translatedCorrect,
+    incorrect_answers: translatedIncorrect,
+  };
 }
 
 // ======================
