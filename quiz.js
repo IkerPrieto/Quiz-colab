@@ -3,7 +3,7 @@ const DOM = {
   optionButtons: Array.from({ length: 4 }, (_, i) =>
     document.getElementById(`btnOption${i + 1}`)
   ),
-  btnNext: document.getElementById("btnNext"),
+  questionNum: document.getElementById("question-number"),
 };
 
 const state = {
@@ -60,7 +60,7 @@ const Storage = {
       localStorage.setItem("quizHistory", JSON.stringify(history));
       localStorage.setItem("quizStats", JSON.stringify(stats));
     } catch (error) {
-      console.error("Error saving result:", error);
+      console.error("Error saving result: ", error);
       throw error;
     }
   },
@@ -104,8 +104,9 @@ const Quiz = {
         DOM.optionButtons[1].onclick = async () =>
           await this.handleAnswer("False");
       }
+      DOM.questionNum.textContent = `${index + 1}/10`;
     } catch (error) {
-      console.error("Error loading question:", error);
+      console.error("Error loading question: ", error);
       alert("Error loading question, reloading...");
       window.location.reload();
     }
@@ -115,7 +116,6 @@ const Quiz = {
     try {
       DOM.optionButtons.forEach((btn) => {
         btn.onclick = null;
-        btn.style.cursor = "not-allowed";
       });
 
       DOM.optionButtons.forEach((btn) => {
@@ -138,7 +138,7 @@ const Quiz = {
 
       setTimeout(async () => {
         await this.nextQuestion();
-      }, 1500);
+      }, 1000);
     } catch (error) {
       console.error("Error handling answer:", error);
     }

@@ -1,64 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quiz</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css" />
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="stats.js" defer></script>
     <script src="script.js" defer></script>
-</head>
-<body>
-    
-    <header class="header">
+  </head>
+  <body>
+    <header id="quizHeader" class="header">
+      <a href="home.html" class="header-link">
         <h1>Quiz</h1>
+      </a>
     </header>
 
     <div>
-        <main class="main-content">
+      <main class="main-content">
         <aside class="aside">
-            <div class="container" id="quiz">
-                <h2>¡Welcome to the quiz!</h2>
-                <button id="btnStart">Take the quiz</button>
-            </div>
+          <div class="container" id="quiz">
+            <h2>¡Welcome to the quiz!</h2>
+            <button id="btnStart">Take the quiz</button>
+          </div>
         </aside>
 
         <aside class="aside">
-            <div class="chart-container">
-                <h2>Your stats</h2>
-                <section id="chart">
-
-                </section>
-            </div>
+          <div class="chart-container">
+            <h2>Your stats</h2>
+            <section id="chart"></section>
+          </div>
         </aside>
 
-        <div id="modalQuizzConfig" class="modal" style="display: none;">
-            <div class="modal-content">
-                <h2>Configura tu Quizz</h2>
-                
-               <label for="category">Category:</label>
-                <select id="category">
-                </select>
-    
-                <label for="dificultad">Dificultad:</label>
-                <select id="difficulty">
-                    <option value="easy">easy</option>
-                    <option value="medium">medium</option>
-                    <option value="hard">hard</option>
-                </select>
+        <div id="modalQuizzConfig" class="modal" style="display: none">
+          <div class="modal-content">
+            <h2>Configura tu Quizz</h2>
 
-                <label for="language">Language:</label>
-<select id="language">
-  <option value="en">English</option>
-  <option value="es">Español</option>
-  <option value="fr">French</option>
-</select>
-        
-                <button id="btnComenzarQuizz">Comenzar</button>
-            </div>
+            <label for="category">Category:</label>
+            <select id="category"></select>
+
+            <label for="dificultad">Dificultad:</label>
+            <select id="difficulty">
+              <option value="easy">easy</option>
+              <option value="medium">medium</option>
+              <option value="hard">hard</option>
+            </select>
+
+            <label for="language">Language:</label>
+            <select id="language">
+              <option value="en">English</option>
+              <option value="es">Español</option>
+              <option value="fr">French</option>
+            </select>
+
+            <button id="btnComenzarQuizz">Comenzar</button>
+          </div>
         </div>
-    </main>
+      </main>
     </div>
-</body>
+  </body>
 </html>
