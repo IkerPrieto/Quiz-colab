@@ -229,6 +229,37 @@ async function translateQuestion(question, targetLang) {
 }
 
 // ======================
+//  TRANSLATION FUNCTION
+// ======================
+async function translateText(text, targetLang) {
+  try {
+    if (!text || targetLang === "en") return text;
+
+    const response = await fetch(LIBRETRANSLATE_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        q: text,
+        source: "auto",
+        target: targetLang,
+        api_key: LIBRETRANSLATE_API_KEY,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data.translatedText || text;
+  } catch (error) {
+    console.error("Translation error:", error);
+    return text;
+  }
+}
+
+// ======================
 //  EVENT HANDLERS
 // ======================
 
