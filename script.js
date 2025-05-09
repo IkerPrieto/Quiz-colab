@@ -48,8 +48,8 @@ const decodeHtmlEntities = (() => {
       : text;
 })();
 
-const LIBRETRANSLATE_API_KEY = "conseguirapikey";
 const LIBRETRANSLATE_URL = "https://libretranslate.com/translate";
+let selectedLang = "";
 
 // ======================
 //  INITIALIZATION
@@ -148,13 +148,13 @@ async function getQuizQuestions(filters) {
 async function getTranslatedQuizQuestions(filters) {
   try {
     const { results: questions } = await getQuizQuestions(filters);
-    const targetLang = DOM.languageSelect.value;
+    selectedLang = DOM.languageSelect.value;
 
     // Primero traducir (con entidades HTML intactas)
     const translatedQuestions =
-      targetLang === "en"
+      selectedLang === "en"
         ? questions
-        : await translateQuestions(questions, targetLang);
+        : await translateQuestions(questions, selectedLang);
 
     // Luego procesar (decodificar entidades)
     return processQuestions(translatedQuestions);
@@ -207,16 +207,13 @@ function processQuestions(questions) {
 //  TRANSLATION API CALL
 // ======================
 
-async function translateText(text, targetLang) {
+async function translateText(text, selectedLang) {
   try {
-    const response = await fetch(LIBRETRANSLATE_URL, {
+    const response = await fetch("http://localhost:8000/translate", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        q: text,
-        source: "auto",
-        target: targetLang,
-        api_key: LIBRETRANSLATE_API_KEY,
+        Text: text,
+        To: selectedLang,
       }),
     });
 
@@ -241,9 +238,9 @@ function setupEventListeners() {
 
   DOM.btnStartQuiz.addEventListener("click", handleStartQuiz);
 
-  DOM.modal.addEventListener("click", (e) => {
+  /*DOM.modal.addEventListener("click", (e) => {
     if (e.target === DOM.modal) DOM.modal.style.display = "none";
-  });
+  });*/
 }
 
 // ======================
@@ -257,7 +254,6 @@ async function handleStartQuiz() {
       difficulty: DOM.difficultySelect.value,
       language: DOM.languageSelect.value,
     };
-
     const questionsData = await getTranslatedQuizQuestions(filters);
 
     sessionStorage.setItem("quizFilters", JSON.stringify(filters));
@@ -273,11 +269,6 @@ async function handleStartQuiz() {
 // ======================
 //  ERROR HANDLING
 // ======================
-
-function handleQuizError(error) {
-  console.error("Quiz error:", error);
-  alert("Quiz error.");
-}
 
 function handleCriticalError(error) {
   console.error("App initialization error:", error);
